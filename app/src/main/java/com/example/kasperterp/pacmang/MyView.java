@@ -31,6 +31,7 @@ public class MyView extends View {
         coins = getCoins;
     }
 
+
     public void moveRight(int x) {
         //still within our boundaries?
         if (pacx + x + pacman.getWidth() < w)

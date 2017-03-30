@@ -22,6 +22,7 @@ public class MainActivity extends Activity implements OnClickListener {
 
     private int timerCount = 0;
     private boolean running = false;
+    private int direction = 1;
     static TextView points;
     static TextView timer;
     @Override
@@ -54,28 +55,29 @@ public class MainActivity extends Activity implements OnClickListener {
 
             @Override
             public void onClick(View v) {
-                myView.moveRight(10);
+                direction = 1;
+
             }
         });
         leftButton.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View v) {
-                myView.moveLeft(10);
+                direction = 2;
             }
         });
         upButton.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View v) {
-                myView.moveUp(10);
+                direction = 3;
             }
         });
         downButton.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View v) {
-                myView.moveDown(10);
+                direction = 4;
             }
         });
 
@@ -96,7 +98,7 @@ public class MainActivity extends Activity implements OnClickListener {
                 TimerMethod();
             }
 
-        }, 0, 200); //0 indicates we start now, 200
+        }, 0, 100); //0 indicates we start now, 200
         //is the number of miliseconds between each call
     }
     protected void onStop() {
@@ -119,13 +121,26 @@ public class MainActivity extends Activity implements OnClickListener {
 
             //This method runs in the same thread as the UI.
             // so we can draw
-            if (running)
+            if (running && direction == 1)
             {
                 timerCount++;
                 //update the counter - notice this is NOT seconds in this example
                 //you need TWO counters - one for the time and one for the pacman
                 timer.setText("Timer value: "+timerCount);
                 myView.moveRight(20); //move the pacman.
+
+            }else if(running && direction == 2){
+                timerCount++;
+                timer.setText("Timer value: "+timerCount);
+                myView.moveLeft(20);
+            }else if(running && direction == 3){
+                timerCount++;
+                timer.setText("Timer value: "+timerCount);
+                myView.moveUp(20);
+            }else if(running && direction == 4){
+                timerCount++;
+                timer.setText("Timer value: "+timerCount);
+                myView.moveDown(20);
             }
 
         }
