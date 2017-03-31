@@ -6,6 +6,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+
+import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.ArrayList;
@@ -18,13 +20,16 @@ public class MainActivity extends Activity implements OnClickListener {
 
     MyView myView;
     private Timer myTimer;
-
-
-    private int timerCount = 0;
-    private boolean running = false;
+    private Timer myTimer2;
+    private Timer myTimer3;
+    public static int timerCount = 60;
+    public boolean running = false;
     private int direction = 1;
+    public static int level = 1 ;
+    public static int ghostSpeed = 10;
     static TextView points;
     static TextView timer;
+    static TextView lvl;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -41,14 +46,19 @@ public class MainActivity extends Activity implements OnClickListener {
         points = (TextView)  findViewById(R.id.points);
         myView = (MyView) findViewById(R.id.gameView);
         timer = (TextView) findViewById(R.id.timer);
+        lvl = (TextView) findViewById(R.id.level);
         //listener of our pacman
         resetButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                timerCount = 60;
+                ghostSpeed = 10;
                 myView.resetGame();
-                timerCount = 0;
                 running = false;
                 timer.setText("Timer value: "+timerCount);
+                running = true;
+                level = 1 ;
+                lvl.setText("Level : "+level);
             }
         });
         rightButton.setOnClickListener(new View.OnClickListener() {
@@ -98,13 +108,31 @@ public class MainActivity extends Activity implements OnClickListener {
                 TimerMethod();
             }
 
-        }, 0, 100); //0 indicates we start now, 200
+        }, 0, 30); //0 indicates we start now, 100
         //is the number of miliseconds between each call
+        myTimer2 = new Timer();
+        myTimer2.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                TimerMethod2();
+            }
+        },0,1000);
+
+        myTimer3 = new Timer();
+        myTimer3.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                TimerMethod3();
+            }
+        },0,1000);
     }
+
     protected void onStop() {
         super.onStop();
         //just to make sure if the app is killed, that we stop the timer.
         myTimer.cancel();
+        myTimer2.cancel();
+        myTimer3.cancel();
     }
 
     private void TimerMethod()
@@ -115,7 +143,33 @@ public class MainActivity extends Activity implements OnClickListener {
         //We call the method that will work with the UI
         //through the runOnUiThread method.
         this.runOnUiThread(Timer_Tick);
+
     }
+    private  void TimerMethod2(){
+        this.runOnUiThread(Timer_time);
+    }
+    private  Runnable Timer_time = new Runnable() {
+        @Override
+        public void run() {
+            if(running){
+                timerCount--;
+                timer.setText("Timer value: "+timerCount);
+                gameTimer(timerCount);
+            }
+
+        }
+    };
+    private void TimerMethod3(){
+        this.runOnUiThread(Timer_enemy);
+    }
+    private Runnable Timer_enemy = new Runnable() {
+        @Override
+        public void run() {
+            if(running){
+                myView.ghostDirection();
+            }
+        }
+    };
     private Runnable Timer_Tick = new Runnable() {
         public void run() {
 
@@ -123,50 +177,59 @@ public class MainActivity extends Activity implements OnClickListener {
             // so we can draw
             if (running && direction == 1)
             {
-                timerCount++;
-                //update the counter - notice this is NOT seconds in this example
-                //you need TWO counters - one for the time and one for the pacman
-                timer.setText("Timer value: "+timerCount);
-                myView.moveRight(20); //move the pacman.
+//                //update the counter - notice this is NOT seconds in this example
+//                //you need TWO counters - one for the time and one for the pacman
+//                timer.setText("Timer value: "+timerCount);
+                myView.moveRight(10); //move the pacman.
+                myView.ghostMove(ghostSpeed);
 
             }else if(running && direction == 2){
-                timerCount++;
-                timer.setText("Timer value: "+timerCount);
-                myView.moveLeft(20);
+                myView.moveLeft(10);
+                myView.ghostMove(ghostSpeed);
             }else if(running && direction == 3){
-                timerCount++;
-                timer.setText("Timer value: "+timerCount);
-                myView.moveUp(20);
+                myView.moveUp(10);
+                myView.ghostMove(ghostSpeed);
             }else if(running && direction == 4){
-                timerCount++;
-                timer.setText("Timer value: "+timerCount);
-                myView.moveDown(20);
+                myView.moveDown(10);
+                myView.ghostMove(ghostSpeed);
             }
 
         }
     };
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the main; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.main, menu);
-        return true;
+    public static void updateTimer(int resetTimer){
+        timerCount = resetTimer;
     }
+    public static void updateLevler(int x){
+        level = x;
+        lvl.setText("Level : "+level);
+        ghostSpeed = 10;
+    }
+    public void gameTimer(int x){
+        if(x>=1 && myView.coinCounter >= 3){
+            myView.resetGame();
+            level++;
+            System.out.println("YOU WON!");
+            lvl.setText("Level : "+level);
+            running = false;
+            timerCount = 60;
+            running = true;
+            ghostSpeed++;
+        }
+        if(x== 0){
+            timerCount = 60;
+            myView.resetGame();
+            running = false;
+            timer.setText("Timer value: "+timerCount);
+            running = true;
+            level = 1 ;
+            lvl.setText("Level : "+level);
+        }
+    }
+
     public static void updateCounter(int coinCounter){
         points.setText("Points : "+coinCounter);
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-        if (id == R.id.action_settings) {
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }
     @Override
     public void onClick(View v) {
         if (v.getId()==R.id.continuebtn)
