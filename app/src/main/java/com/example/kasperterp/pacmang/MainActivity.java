@@ -54,7 +54,7 @@ public class MainActivity extends Activity implements OnClickListener {
                 ghostSpeed = 10;
                 myView.resetGame();
                 running = false;
-                timer.setText("Timer value: "+timerCount);
+                timer.setText("Time left: "+timerCount);
                 running = true;
                 level = 1 ;
                 lvl.setText("Level : "+level);
@@ -151,7 +151,7 @@ public class MainActivity extends Activity implements OnClickListener {
         public void run() {
             if(running){
                 timerCount--;
-                timer.setText("Timer value: "+timerCount);
+                timer.setText("Time left: "+timerCount);
                 gameTimer(timerCount);
             }
 
@@ -216,7 +216,7 @@ public class MainActivity extends Activity implements OnClickListener {
             timerCount = 60;
             myView.resetGame();
             running = false;
-            timer.setText("Timer value: "+timerCount);
+            timer.setText("Timer left: "+timerCount);
             running = true;
             level = 1 ;
             ghostSpeed = 10;
