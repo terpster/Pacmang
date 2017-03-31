@@ -1,20 +1,16 @@
 package com.example.kasperterp.pacmang;
 import android.app.Activity;
 import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.view.View.OnClickListener;
 
-import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.ArrayList;
-import android.view.View;
-import android.view.View.OnClickListener;
 
-import org.w3c.dom.Text;
+
 
 public class MainActivity extends Activity implements OnClickListener {
 
@@ -222,6 +218,7 @@ public class MainActivity extends Activity implements OnClickListener {
             timer.setText("Timer value: "+timerCount);
             running = true;
             level = 1 ;
+            ghostSpeed = 10;
             lvl.setText("Level : "+level);
         }
     }
