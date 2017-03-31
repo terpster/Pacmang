@@ -114,7 +114,7 @@ public class MyView extends View {
             double xdist = pow((sensorCoinx - sensorPacx), 2);
             double ydist = pow((sensorCoiny - sensorPacy), 2);
             double dist = sqrt(xdist + ydist);
-            if(dist<65 && coin.taken ==false ){
+            if(dist<90 && coin.taken ==false ){
                 coin.taken = true;
                 coinCounter++;
                 System.out.println(coinCounter);
@@ -133,7 +133,7 @@ public class MyView extends View {
             double xdist = pow((sensorEnemyx - sensorPacx), 2);
             double ydist = pow((sensorEnemyy - sensorPacy), 2);
             double dist = sqrt(xdist + ydist);
-            if(dist<=60){
+            if(dist<=155){
                 System.out.println("HIT!");
                 updateLevel(1);
                 resetGame();

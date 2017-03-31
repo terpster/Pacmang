@@ -203,7 +203,7 @@ public class MainActivity extends Activity implements OnClickListener {
 
 
     public void gameTimer(int x){
-        if(x>=1 && myView.coinCounter >= 9){
+        if(x>=1 && myView.coinCounter == 10){
             myView.resetGame();
             level++;
             lvl.setText("Level : "+level);
