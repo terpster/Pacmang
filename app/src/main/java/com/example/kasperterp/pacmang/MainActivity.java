@@ -1,10 +1,12 @@
 package com.example.kasperterp.pacmang;
 import android.app.Activity;
+import android.content.Context;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import android.view.View.OnClickListener;
+import android.widget.Toast;
 
 import java.util.Timer;
 import java.util.TimerTask;
@@ -15,9 +17,9 @@ import java.util.ArrayList;
 public class MainActivity extends Activity implements OnClickListener {
 
     MyView myView;
-    private Timer myTimer;
-    private Timer myTimer2;
-    private Timer myTimer3;
+    private Timer moveTimer;
+    private Timer gameTimeTimer;
+    private Timer directionTimer;
     public static int timerCount = 60;
     public boolean running = false;
     private int direction = 1;
@@ -44,6 +46,7 @@ public class MainActivity extends Activity implements OnClickListener {
         timer = (TextView) findViewById(R.id.timer);
         lvl = (TextView) findViewById(R.id.level);
         //listener of our pacman
+
         resetButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -95,10 +98,10 @@ public class MainActivity extends Activity implements OnClickListener {
         myView.setCoins(coins);
 
         //make a new timer
-        myTimer = new Timer();
+        moveTimer = new Timer();
         running = true; //should the game be running?
         //We will call the timer 5 times each second
-        myTimer.schedule(new TimerTask() {
+        moveTimer.schedule(new TimerTask() {
             @Override
             public void run() {
                 TimerMethod();
@@ -106,16 +109,16 @@ public class MainActivity extends Activity implements OnClickListener {
 
         }, 0, 30); //0 indicates we start now, 100
         //is the number of miliseconds between each call
-        myTimer2 = new Timer();
-        myTimer2.schedule(new TimerTask() {
+        gameTimeTimer = new Timer();
+        gameTimeTimer.schedule(new TimerTask() {
             @Override
             public void run() {
                 TimerMethod2();
             }
         },0,1000);
 
-        myTimer3 = new Timer();
-        myTimer3.schedule(new TimerTask() {
+        directionTimer = new Timer();
+        directionTimer.schedule(new TimerTask() {
             @Override
             public void run() {
                 TimerMethod3();
@@ -126,16 +129,15 @@ public class MainActivity extends Activity implements OnClickListener {
     protected void onStop() {
         super.onStop();
         //just to make sure if the app is killed, that we stop the timer.
-        myTimer.cancel();
-        myTimer2.cancel();
-        myTimer3.cancel();
+        moveTimer.cancel();
+        gameTimeTimer.cancel();
+        directionTimer.cancel();
     }
 
     private void TimerMethod()
     {
         //This method is called directly by the timer
         //and runs in the same thread as the timer.
-
         //We call the method that will work with the UI
         //through the runOnUiThread method.
         this.runOnUiThread(Timer_Tick);
@@ -173,9 +175,6 @@ public class MainActivity extends Activity implements OnClickListener {
             // so we can draw
             if (running && direction == 1)
             {
-//                //update the counter - notice this is NOT seconds in this example
-//                //you need TWO counters - one for the time and one for the pacman
-//                timer.setText("Timer value: "+timerCount);
                 myView.moveRight(10); //move the pacman.
                 myView.ghostMove(ghostSpeed);
 
@@ -200,11 +199,13 @@ public class MainActivity extends Activity implements OnClickListener {
         lvl.setText("Level : "+level);
         ghostSpeed = 10;
     }
+
+
+
     public void gameTimer(int x){
-        if(x>=1 && myView.coinCounter >= 3){
+        if(x>=1 && myView.coinCounter >= 9){
             myView.resetGame();
             level++;
-            System.out.println("YOU WON!");
             lvl.setText("Level : "+level);
             running = false;
             timerCount = 60;

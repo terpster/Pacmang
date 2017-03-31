@@ -128,12 +128,12 @@ public class MyView extends View {
         for(Enemy enemy: enemies){
             int sensorPacx = pacx + pacman.getWidth()/2;
             int sensorPacy = pacy + pacman.getHeight()/2;
-            int sensorEnemyx = enemy.posX + bitCoin.getWidth()/2;
-            int sensorEnemyy = enemy.posY + bitCoin.getHeight()/2;
+            int sensorEnemyx = enemy.posX + ghost.getWidth()/2;
+            int sensorEnemyy = enemy.posY + ghost.getHeight()/2;
             double xdist = pow((sensorEnemyx - sensorPacx), 2);
             double ydist = pow((sensorEnemyy - sensorPacy), 2);
             double dist = sqrt(xdist + ydist);
-            if(dist<=100){
+            if(dist<=60){
                 System.out.println("HIT!");
                 updateLevel(1);
                 resetGame();
